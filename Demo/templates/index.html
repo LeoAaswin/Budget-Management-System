@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Budget Management</title>
+    <style>
+        /* Button styling */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 50%;
+            text-decoration: none;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Green button for Income */
+        .btn-green {
+            background-color: green;
+            color: white;
+        }
+
+        /* Red button for Expenditure */
+        .btn-red {
+            background-color: red;
+            color: white;
+        }
+
+        /* Yellow button for Report */
+        .btn-yellow {
+            background-color: yellow;
+            color: black;
+        }
+
+        /* Hover effect */
+        .btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Budget Management</h1>
+    
+    <!-- Income Button -->
+    <a href="{{ url_for('income') }}" class="btn btn-green">Income</a>
+    
+    <!-- Expenditure Button -->
+    <a href="{{ url_for('expenditure') }}" class="btn btn-red">Expenditure</a>
+    
+    <!-- Report Button -->
+    <a href="{{ url_for('report') }}" class="btn btn-yellow">View Report</a>
+</body>
+</html>
