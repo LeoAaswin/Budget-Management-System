@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Income Form</title>
+    <style>
+         body {
+    font-family: Arial, sans-serif;
+    background-color: #fcf8f8;
+    margin: 0;
+    padding: 20px;
+  }
+  .form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 30px auto;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  .form-group input[type="name"],
+  .form-group input[type="date"],
+  .form-group input[type="number"]
+   {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+  }
+  .form-group input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: green;
+    color: white;
+    cursor: pointer;
+  }
+  h1 {
+    text-align: center;
+    color: green;
+    text-decoration: underline black;
+
+  }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+    <h1>Income Form</h1>
+    <form method="post">
+      <div class="form-group">
+      <label>Name:</label>
+      <input type="name" name="name" required><br><br>
+      </div>
+
+      <div class="form-group">
+      <label>Date:</label>
+      <input type="date" name="date" required><br><br>
+      </div>
+      
+      <div class="form-group">
+      <label>Type of Service:</label>
+      <input type="name" name="service_type" required><br><br>
+      </div>
+      
+      <div class="form-group">
+      <label>Amount:</label>
+      <input type="number" name="amount" required><br><br>
+      </div>
+      
+      <div class="form-group">
+      <label>Transaction Type:</label>
+      <input type="name" name="transaction_type"required><br><br>
+      </div>
+
+      <div class="form-group">
+      <label>Reference No.:</label>
+      <input type="name" name="reference_no" required><br><br>
+      </div>
+      
+      <div class="form-group">
+      <input type="submit" value="Submit">
+      </div>
+  </form>
+</div>
+</body>
+</html>

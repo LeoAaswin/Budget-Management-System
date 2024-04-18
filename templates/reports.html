@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Financial Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+            margin-top: 20px;
+            text-decoration: underline black;
+        }
+
+        h2 {
+            color: #030303;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #000000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e6d9d9;
+            font-weight: bold;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background-color: #ffffff;
+            width: 80%;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 80%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-link {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Financial Report</h1>
+
+<h2>Income</h2>
+{{ income_table|safe }}
+<p class="total-row">Total Income: {{ total_income }}</p>
+<div class="download-link">
+<button onclick="downloadTable('income_table')">Download Income Table</button>
+</div>
+
+<h2>Expenditure</h2>
+{{ expenditure_table|safe }}
+<p class="total-row">Total Expenditure: {{ total_expenditure }}</p>
+<div class="download-link">
+<button onclick="downloadTable('expenditure_table')">Download Expenditure Table</button>
+</div>
+
+<h2>Profit/Loss: {{ profit_loss }}</h2>
+
+<h2>Income vs Expenditure</h2>
+<img src="data:image/png;base64,{{ plot_base64 }}" alt="Income vs Expenditure">
+
+<h2>Profit and Loss</h2>
+<img src="data:image/png;base64,{{ pie_base64 }}" alt="Profit and Loss">
+
+<script type="text/javascript">
+    function downloadTable(tableId) {
+        const tableContent = document.getElementById(tableId).outerHTML;
+        const filename = tableId + ".html";
+
+        const blob = new Blob([tableContent], { type: "text/html" });
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
