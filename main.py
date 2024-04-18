@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import matplotlib.pyplot as plt
+from openpyxl import load_workbook
+from openpyxl.utils.dataframe import dataframe_to_rows
 import io
 import base64
+import os.path
 
 app = Flask(__name__)
 
@@ -22,9 +25,33 @@ def income():
         transaction_type = request.form['transaction_type']
         reference_no = request.form['reference_no']
 
-        with open('income.csv', 'a') as f:
-            f.write(f"{name},{date},{service_type},{amount},{transaction_type},{reference_no}\n")
+        # Append data to DataFrame
+        data = {'Name': [name], 'Date': [date], 'Service Type': [service_type], 'Amount': [amount], 'Transaction Type': [transaction_type], 'Reference No.': [reference_no]}
+        df = pd.DataFrame(data)
         
+        # Write DataFrame to Excel file
+        def file_contains_data(file_path):
+          return os.path.exists(file_path) and os.path.getsize(file_path) > 0
+        
+        file_path = 'income.xlsx'
+
+        if file_contains_data(file_path):
+    
+            try:
+                existing_wb = load_workbook(file_path)
+                existing_ws = existing_wb.active
+                next_row = existing_ws.max_row + 1
+                for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=False), next_row):
+                    for c_idx, value in enumerate(row, 1):
+                        existing_ws.cell(row=r_idx, column=c_idx, value=value)
+                existing_wb.save(file_path)
+                print("Data appended successfully to", file_path)
+            except Exception as e:
+                print("An error occurred:", e)
+        else:
+            # If the file doesn't exist or is empty, create a new file and save the data with headers
+            df.to_excel(file_path, index=False)
+            print("Created new file with data.")
         return redirect(url_for('index'))
     
     return render_template('income_form.html')
@@ -38,8 +65,33 @@ def expenditure():
         purpose = request.form['purpose']
         amount = request.form['amount']
 
-        with open('expenditure.csv', 'a') as f:
-            f.write(f"{name},{date},{purpose},{amount}\n")
+        # Append data to DataFrame
+        data = {'Name': [name], 'Date': [date], 'Purpose': [purpose], 'Amount': [amount]}
+        df = pd.DataFrame(data)
+        
+        # Write DataFrame to Excel file
+        def file_contains_data(file_path):
+          return os.path.exists(file_path) and os.path.getsize(file_path) > 0
+        file_path = 'expenditure.xlsx'
+
+       
+        if file_contains_data(file_path):
+    
+            try:
+                existing_wb = load_workbook(file_path)
+                existing_ws = existing_wb.active
+                next_row = existing_ws.max_row + 1
+                for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=False), next_row):
+                    for c_idx, value in enumerate(row, 1):
+                        existing_ws.cell(row=r_idx, column=c_idx, value=value)
+                existing_wb.save(file_path)
+                print("Data appended successfully to", file_path)
+            except Exception as e:
+                print("An error occurred:", e)
+        else:
+            # If the file doesn't exist or is empty, create a new file and save the data with headers
+            df.to_excel(file_path, index=False)
+            print("Created new file with data.")
 
         return redirect(url_for('index'))
     
@@ -48,9 +100,9 @@ def expenditure():
 # Report Page
 @app.route('/report')
 def report():
-    # Read CSV files
-    income_df = pd.read_csv('income.csv', names=['Name', 'Date','Service Type', 'Amount', 'Transaction Type', 'Reference No.'])
-    expenditure_df = pd.read_csv('expenditure.csv', names=['Name', 'Date', 'Purpose', 'Amount'])
+    # Read Excel files
+    income_df = pd.read_excel('income.xlsx')
+    expenditure_df = pd.read_excel('expenditure.xlsx')
 
     # Calculate total income and expenditure
     total_income = income_df['Amount'].astype(float).sum()
