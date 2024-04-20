@@ -72,7 +72,7 @@
 {{ income_table|safe }}
 <p class="total-row">Total Income: {{ total_income }}</p>
 <div class="download-link">
-<button onclick="downloadTable('income_table')">Download Income Table</button>
+<button onclick="downloadTable('income_table' )">Download Income Table</button>
 </div>
 
 <h2>Expenditure</h2>
@@ -92,20 +92,20 @@
 
 <script type="text/javascript">
     function downloadTable(tableId) {
-        const tableContent = document.getElementById(tableId).outerHTML;
-        const filename = tableId + ".html";
-
-        const blob = new Blob([tableContent], { type: "text/html" });
-
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
+        const tableElement = document.getElementById(tableId);
+        if (tableElement) {
+            const tableContent = tableElement.outerHTML;
+            const filename = tableId + ".html";
+            const blob = new Blob([tableContent], { type: "text/html" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            console.error("Table element with ID '" + tableId + "' not found.");
+        }
     }
 </script>
 

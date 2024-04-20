@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
@@ -8,15 +8,46 @@ import base64
 import os.path
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Set a secret key for session management
 
 # Landing Page
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'username' in session:
+        return render_template('index.html')
+    return redirect(url_for('login'))
+
+# Login Page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Perform basic authentication
+        if username == 'Aaswin Dhakal' and password == '9849546398':
+            session['username'] = username
+            return redirect(url_for('index'))
+        else:
+            return render_template('login.html', error='Invalid username or password')
+
+    return render_template('login.html')
+
+# Logout
+# Logout
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
 
 # Income Form
 @app.route('/income', methods=['GET', 'POST'])
 def income():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # Your existing income route logic goes here...
     if request.method == 'POST':
         name = request.form['name']
         date = request.form['date']
@@ -59,6 +90,10 @@ def income():
 # Expenditure Form
 @app.route('/expenditure', methods=['GET', 'POST'])
 def expenditure():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # Your existing expenditure route logic goes here...
     if request.method == 'POST':
         name = request.form['name']
         date = request.form['date']
@@ -100,9 +135,18 @@ def expenditure():
 # Report Page
 @app.route('/report')
 def report():
-    # Read Excel files
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # Your existing report route logic goes here...
     income_df = pd.read_excel('income.xlsx')
     expenditure_df = pd.read_excel('expenditure.xlsx')
+
+    # Sort dataframes by date
+    income_df['Date'] = pd.to_datetime(income_df['Date'])
+    expenditure_df['Date'] = pd.to_datetime(expenditure_df['Date'])
+    income_df = income_df.sort_values(by='Date')
+    expenditure_df = expenditure_df.sort_values(by='Date')
 
     # Calculate total income and expenditure
     total_income = income_df['Amount'].astype(float).sum()
@@ -139,7 +183,7 @@ def report():
     plt_bytes_pie.seek(0)
     pie_base64 = base64.b64encode(plt_bytes_pie.getvalue()).decode()
 
-    # Render the report template with the tables and charts
+    # Render the report template with the sorted tables and charts
     return render_template('reports.html', 
                            income_table=income_df.to_html(index=False), 
                            expenditure_table=expenditure_df.to_html(index=False),
@@ -148,6 +192,7 @@ def report():
                            profit_loss=profit_loss,
                            plot_base64=plot_base64,
                            pie_base64=pie_base64)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

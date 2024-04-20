@@ -25,37 +25,28 @@
   .buttons {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap; /* Add this to wrap the buttons */
+  }
+  
+  .button {
+    margin: 0 10px 10px 10px; /* Add margin to each button */
   }
   
   .button_green {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 0 10px;
     background-color: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
   }
   
   .button_red {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 0 10px;
     background-color: #f44336;
-    color: white;
-    text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
   }
   
   .button_blue {
+    background-color: #2196F3;
+  }
+  
+  .button {
     display: inline-block;
     padding: 10px 20px;
-    margin: 0 10px;
-    background-color: #2196F3;
     color: white;
     text-decoration: none;
     border: none;
@@ -64,19 +55,26 @@
   }
   
   .button:hover {
-    background-color: #45a049;
+    opacity: 0.8;
   }
 </style>
 
 </head>
 <body>
   <div class="container">
-    <h1>Welcome To Budget Management System</h1>
+    <h1>Welcome To Expenditure Management System</h1>
     <h2>Choose Your Option</h2>
     <div class="buttons">
-      <a href="{{ url_for('income') }}" class="button_green">Income</a>
-      <a href="{{ url_for('expenditure') }}" class="button_red">Expenditure</a>
-      <a href="{{ url_for('report') }}" class="button_blue">Report</a>
+      <a href="{{ url_for('income') }}" class="button button_green">Income</a>
+      <a href="{{ url_for('expenditure') }}" class="button button_red">Expenditure</a>
+      <a href="{{ url_for('report') }}" class="button button_blue">Report</a>
+      {% if 'username' in session %}
+      <form action="{{ url_for('logout') }}" method="post">
+          <button type="submit" class="button button_red">Logout</button>
+      </form>
+      {% else %}
+      <a href="{{ url_for('login') }}" class="button button_blue">Login</a>
+      {% endif %}
     </div>
   </div>
 </body>
